@@ -3,6 +3,30 @@ fn main() {
 
 
 }
+#[test]
+fn test_exclusive_reference() {
+    let mut point = (1, 2);
+    let x_coord_ref = &mut point.0;
+    // let x_coord = point.0;
+    // let mut x_coord_ref_2 = &point.0;
+    // let x_coord_ref_3 = &mut point.0;
+    let y_coord_ref = &point.1;
+    *x_coord_ref = 20;
+    println!("point: {point:?}");
+}
+
+#[test]
+fn test_shared_reference() {
+    let a = 'A';
+    let b = 'B';
+    let mut r: &char = &a;
+    println!("r: {}", *r);
+
+    r = &b;
+    let s = &b;
+    println!("r: {}", *r);
+    println!("s: {}", *r);
+}
 
 #[test]
 fn test_transpose() {
