@@ -3,6 +3,81 @@ fn main() {
 
 
 }
+
+use std::mem::transmute;
+
+macro_rules! dbg_bits {
+    ($e:expr, $bit_type:ty) => {
+        println!("- {}: {:#x}", stringify!($e), transmute::<_, $bit_type>($e));
+    };
+}
+
+#[test]
+fn test_bitwise_repr() {
+    unsafe {
+        println!("bool:");
+        dbg_bits!(false, u8);
+        dbg_bits!(true, u8);
+
+        println!("Option<bool>:");
+        dbg_bits!(None::<bool>, u8);
+        dbg_bits!(Some(false), u8);
+        dbg_bits!(Some(true), u8);
+
+        println!("Option<Option<bool>>:");
+        dbg_bits!(Some(Some(false)), u8);
+        dbg_bits!(Some(Some(true)), u8);
+        dbg_bits!(Some(None::<bool>), u8);
+        dbg_bits!(None::<Option<bool>>, u8);
+
+        println!("Option<&i32>:");
+        dbg_bits!(None::<&i32>, usize);
+        dbg_bits!(Some(&0i32), usize);
+    }
+}
+
+#[derive(Debug)]
+#[repr(u32)]
+enum Bar {
+    A,  // 0
+    B = 10000,
+    C,  // 10001
+}
+
+#[test]
+fn test_enum_discriminant() {
+    let a = Bar::A;
+    println!("a: {:?}", a);
+    println!("a(u32): {:?}", a as u32);
+    let b = Bar::B;
+    println!("b: {:?}", b as u16);
+
+    println!("C(u32): {}", Bar::C as u32);
+    println!("C(u8): {}", Bar::C as u8);
+}
+
+#[derive(Debug)]
+enum Direction {
+    Left,
+    Right,
+}
+
+#[derive(Debug)]
+enum PlayerMove {
+    Pass,                        // Simple variant
+    Run(Direction),              // Tuple variant
+    Teleport { x: u32, y: u32 }, // Struct variant
+}
+
+#[test]
+fn test_enum() {
+    let mut m = PlayerMove::Run(Direction::Left);
+    println!("On this turn: {:?}", m);
+
+    m = PlayerMove::Teleport { x: 1, y: 2 };
+    println!("On this turn: {:?}", m);
+}
+
 #[test]
 fn test_tuple_struct() {
     let mut p = Point(17, 23);
