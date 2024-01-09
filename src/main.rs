@@ -4,6 +4,22 @@ fn main() {
 
 }
 #[test]
+fn test_type_alias() {
+    type Name = String;
+    type Age = u32;
+    // type Person = (Name, Age);
+    #[derive(Debug)]
+    struct Person(Name, Age);
+
+    fn new_person(name: Name, age: Age) -> Person {
+        Person(name, age)
+    }
+
+    let john = new_person(String::from("John"), 42);
+    println!("john: {:?}", john);
+}
+
+#[test]
 fn test_const_and_static() {
     const DIGEST_SIZE: usize = 3;
     static ZERO: Option<u8> = Some(42);
