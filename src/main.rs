@@ -3,6 +3,20 @@ fn main() {
 
 
 }
+#[test]
+fn test_const_and_static() {
+    const DIGEST_SIZE: usize = 3;
+    static ZERO: Option<u8> = Some(42);
+
+    let mut digest = [ZERO.unwrap_or(0); DIGEST_SIZE];
+    println!("digest: {digest:?}");
+
+    let text: &str = "Hello";
+    for (idx, &b) in text.as_bytes().iter().enumerate() {
+        digest[idx % DIGEST_SIZE] = digest[idx % DIGEST_SIZE].wrapping_add(b);
+        println!("digest: {digest:?}");
+    }
+}
 
 use std::mem::transmute;
 
